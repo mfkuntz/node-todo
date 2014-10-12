@@ -55,14 +55,13 @@ app.listen(port, ipaddress, function() {
 					res.send(err);
 				}
 
-			});
+				Todo.find(function(err, todos){
 
-			Todo.find(function(err, todos){
-
-				if (err){
-					res.send(err);
-				}
-				res.json(todos);
+					if (err){
+						res.send(err);
+					}
+					res.json(todos);
+				});
 			});
 
 		});
