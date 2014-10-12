@@ -1,3 +1,4 @@
+#!/bin/env node
 //imports
 var express  = require('express');
 var app      = express(); 								// create our app w/ express
@@ -24,7 +25,7 @@ var Todo = mongoose.model('Todo', {
 //listen
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 app.listen(port);
-console.log('App listenening on 8080');
+console.log('App listenening on ' + port);
 
 //routes
 
