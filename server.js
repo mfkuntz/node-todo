@@ -22,7 +22,8 @@ var Todo = mongoose.model('Todo', {
 });
 
 //listen
-app.listen(8080);
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+app.listen(port);
 console.log('App listenening on 8080');
 
 //routes
