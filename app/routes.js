@@ -59,7 +59,7 @@ module.exports = function(app, passport){
 	});
 
 	//todo app
-	app.get('/todo', function(req,res){
+	app.get('/todo', isLoggedIn, function(req,res){
 		res.sendfile('./public/todo.html'); //load file into single view for Angular to then handle
 	});
 
@@ -100,6 +100,15 @@ module.exports = function(app, passport){
 		req.logout();
 		res.redirect('/');
 	});
+
+	//--------------- GOOGLE ---------------
+	app.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));
+
+	app.get('/auth/google/callback', passport.authenticate('google',{
+		successRedirect : '/profile',
+		failureRedirect : '/'
+	}));
+
 };
 
 function isLoggedIn(req,res,next){

@@ -1,10 +1,14 @@
 var localStrategy = require('passport-local').Strategy;
+var googleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 var User = require('../app/models/user');
 
+module.exports = function(passport, ip, port){
 
-module.exports = function(passport){
-
+	//init config Auth with needed ip and port
+	var authConfig = require('./auth');
+	var googleAuth = authConfig.googleAuth(ip,port);
+	
 	passport.serializeUser(function(user, done){
 		done(null, user.id);
 	});
@@ -15,6 +19,7 @@ module.exports = function(passport){
 		});
 	});
 
+	//------------------------ LOCAL ------------------------
 	passport.use('local-signup', new localStrategy({
 
 		//default is username, pass
@@ -79,4 +84,43 @@ module.exports = function(passport){
 			});
 	}
 	));
+
+	//------------------------ GOOGLE ------------------------
+	passport.use(new googleStrategy({
+		clientID : googleAuth.clientID,
+		clientSecret : googleAuth.clientSecret,
+		callbackURL : googleAuth.callbackURL
+	},
+	function(token, refreshToken, profile, done){
+		//asynch
+		process.nextTick(function(){
+
+			User.findOne({'google.id' : profile.id}, function(err, user){
+
+				if (err)
+					return done(err);
+
+				if (user){
+					return done(null, user);
+				}else{
+
+					var newUser = new User();
+
+					newUser.google.id = profile.id;
+					newUser.google.token = token;
+					newUser.google.name = profile.displayName;
+					newUser.google.email = profile.emails[0].value;
+
+					newUser.save(function(err){
+						if (err)
+							throw err;
+
+						return done(null,newUser);
+					});
+				}
+
+			});
+		});
+	}));
+
 };
