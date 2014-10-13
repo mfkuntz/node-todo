@@ -12,13 +12,17 @@ var session = require('express-session');
 var bodyParser = require('body-parser'); 	// pull information from HTML POST (express4)
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 
+//Hosting configs
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+
 //User
 var database = require('./config/database');
 
 //config 
 mongoose.connect(database.url); 
 
-require('./config/passport')(passport); // pass passport for configuration
+require('./config/passport')(passport, ipaddress, port); // pass passport for configuration
 
 //Config libs
 app.use(express.static(__dirname + '/public')); 	; //static file location
@@ -42,8 +46,6 @@ app.use(flash()); //connect flash for message stored in session
 require('./app/routes')(app, passport);
 
 //listen
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
 app.listen(port, ipaddress, function() {
     console.log('%s: Node server started on %s:%d ...',
