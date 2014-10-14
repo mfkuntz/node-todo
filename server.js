@@ -13,8 +13,7 @@ var bodyParser = require('body-parser'); 	// pull information from HTML POST (ex
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 
 //Hosting configs
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var serverInfo = require('./config/serverInfo')();
 
 //User
 var database = require('./config/database');
@@ -22,7 +21,7 @@ var database = require('./config/database');
 //config 
 mongoose.connect(database.url); 
 
-require('./config/passport')(passport, ipaddress, port); // pass passport for configuration
+require('./config/passport')(passport, serverInfo); // pass passport for configuration
 
 //Config libs
 app.use(express.static(__dirname + '/public')); 	; //static file location
@@ -47,7 +46,7 @@ require('./app/routes')(app, passport);
 
 //listen
 
-app.listen(port, ipaddress, function() {
+app.listen(serverInfo.port, serverInfo.ip, function() {
     console.log('%s: Node server started on %s:%d ...',
-                Date(Date.now() ), ipaddress, port);
+                Date(Date.now() ), serverInfo.ip, serverInfo.port);
 });

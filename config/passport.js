@@ -3,11 +3,11 @@ var googleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 var User = require('../app/models/user');
 
-module.exports = function(passport, ip, port){
+module.exports = function(passport, serverInfo){
 
 	//init config Auth with needed ip and port
 	var authConfig = require('./auth');
-	var googleAuth = authConfig.googleAuth(ip,port);
+	var googleAuth = authConfig.googleAuth(serverInfo);
 	
 	passport.serializeUser(function(user, done){
 		done(null, user.id);
