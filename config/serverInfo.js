@@ -1,4 +1,4 @@
-var hostDNSName = 'http://todo-mfkuntz.rhcloud.com/';
+var hostDNSName = 'http://todo-mfkuntz.rhcloud.com';
 const localHost = '127.0.0.1';
 module.exports = function(){
 
